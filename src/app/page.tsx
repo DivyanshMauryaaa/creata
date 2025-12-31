@@ -1,65 +1,143 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { AlignCenter, Check, Folder, Sparkles } from "lucide-react";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="p-6 flex flex-col w-[60%] mx-auto justify-center font-roboto-slab">
+      <div className="py-16 text-center">
+        <span className="px-3 py-2 rounded-full bg-indigo-700 text-white">CREATA AI</span>
+        <p className="text-5xl mt-5">The <span className="text-indigo-700">Perfect tool</span> for Founders to get started on Social Media.</p>
+        <p className="text-2xl">Create your account now and start building your brand.</p>
+        <Button size={'lg'} className="mt-5 cursor-pointer bg-indigo-700 hover:bg-indigo-600">Make my brand</Button>
+      </div>
+
+      <div className="flex mt-5 gap-4">
+        <Card className="px-6 flex flex-col gap-1 w-1/3">
+          <Sparkles size={32} className="fill-current text-indigo-700" />
+          <CardTitle className="text-3xl">Get Better Ideas</CardTitle>
+          <CardDescription>Get automatic ideas for videos for your brand according to your preferences & what your audience wants.</CardDescription>
+        </Card>
+        <Card className="px-6 flex flex-col gap-1 w-1/3">
+          <AlignCenter size={32} className="fill-current text-indigo-700" />
+          <CardTitle className="text-3xl">Generate Instant scripts</CardTitle>
+          <CardDescription>Generate better, instant & unique scripts for your content.</CardDescription>
+        </Card>
+        <Card className="px-6 flex flex-col gap-1 w-1/3">
+          <Folder size={32} className="fill-current text-indigo-700" />
+          <CardTitle className="text-3xl">Organize without efforts</CardTitle>
+          <CardDescription>Organize your content related work without any extra overload.</CardDescription>
+        </Card>
+      </div>
+      <br />
+
+      <Card className="py-24 bg-indigo-700 items-center flex flex-col">
+        <p className="text-5xl text-white">Save time, effort & cost. Reduce Cognative load</p>
+        <p className="text-lg text-white">Get started with Creata for as low as $12.</p>
+      </Card>
+
+      <div className="py-24">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold tracking-tight mb-4">Simple, Transparent Pricing</h2>
+          <p className="text-xl text-muted-foreground">Choose the perfect plan for your content creation journey.</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          {/* Free Plan */}
+          <Card className="flex flex-col">
+            <div className="p-6">
+              <CardTitle className="text-2xl mb-2">Starter</CardTitle>
+              <CardDescription className="mb-4">Perfect for trying out Creata</CardDescription>
+              <div className="mb-6">
+                <span className="text-4xl font-bold">Free</span>
+                <span className="text-muted-foreground">/forever</span>
+              </div>
+              <Button variant="outline" className="w-full">Get Started</Button>
+            </div>
+            <div className="px-6 pb-6 pt-2 flex-1">
+              <ul className="space-y-3">
+                <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Check className="h-4 w-4 text-primary" /> 50 Credits / month
+                </li>
+              </ul>
+            </div>
+          </Card>
+
+          {/* $30 Plan */}
+          <Card className="flex flex-col relative border-indigo-600 shadow-lg scale-105 z-10">
+            <div className="absolute top-0 right-0 -mt-3 -mr-3 px-3 py-1 bg-indigo-600 text-white text-xs font-bold rounded-full transform rotate-12">
+              POPULAR
+            </div>
+            <div className="p-6">
+              <CardTitle className="text-2xl mb-2 text-indigo-700">Creator</CardTitle>
+              <CardDescription className="mb-4">For growing content creators</CardDescription>
+              <div className="mb-6">
+                <span className="text-4xl font-bold">$12</span>
+                <span className="text-muted-foreground">/month</span>
+              </div>
+              <Button className="w-full bg-indigo-700 hover:bg-indigo-600">Subscribe Now</Button>
+            </div>
+            <div className="px-6 pb-6 pt-2 flex-1">
+              <ul className="space-y-3">
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="h-4 w-4 text-indigo-700" /> 500 Credits / month
+                </li>
+              </ul>
+            </div>
+          </Card>
+
+          {/* $60 Plan */}
+          <Card className="flex flex-col">
+            <div className="p-6">
+              <CardTitle className="text-2xl mb-2">Pro</CardTitle>
+              <CardDescription className="mb-4">For professional brands</CardDescription>
+              <div className="mb-6">
+                <span className="text-4xl font-bold">$29.99</span>
+                <span className="text-muted-foreground">/month</span>
+              </div>
+              <Button variant="outline" className="w-full">Upgrade to Pro</Button>
+            </div>
+            <div className="px-6 pb-6 pt-2 flex-1">
+              <ul className="space-y-3">
+                <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Check className="h-4 w-4 text-primary" /> 2,000 Credits / month
+                </li>
+                <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Check className="h-4 w-4 text-primary" /> Content Calendar
+                </li>
+              </ul>
+            </div>
+          </Card>
+
+          {/* $80 Plan */}
+          <Card className="flex flex-col">
+            <div className="p-6">
+              <CardTitle className="text-2xl mb-2">Agency</CardTitle>
+              <CardDescription className="mb-4">For agencies & large teams</CardDescription>
+              <div className="mb-6">
+                <span className="text-4xl font-bold">$48.88</span>
+                <span className="text-muted-foreground">/month</span>
+              </div>
+              <Button variant="outline" className="w-full">Upgrade to Agency</Button>
+            </div>
+            <div className="px-6 pb-6 pt-2 flex-1">
+              <ul className="space-y-3">
+                <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Check className="h-4 w-4 text-primary" /> 20,000 Credits / month
+                </li>
+                <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Check className="h-4 w-4 text-primary" /> Content Calendar
+                </li>
+
+              </ul>
+            </div>
+          </Card>
         </div>
-      </main>
+      </div>
+      <br />
+
+      <p className="text-[300px] font-bold font-instrument-serif">CREATA</p>
     </div>
   );
 }
