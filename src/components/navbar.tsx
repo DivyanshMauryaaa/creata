@@ -1,6 +1,9 @@
+'use client'
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 export function Navbar() {
     return (
@@ -14,18 +17,36 @@ export function Navbar() {
                     Creata
                 </Link>
 
-                {/* Desktop Navigation */}
-                <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-                    <Link href="#features" className="hover:text-primary transition-colors">Features</Link>
-                    <Link href="#pricing" className="hover:text-primary transition-colors">Pricing</Link>
-                </div>
+                <SignedOut>
+                    {/* Desktop Navigation */}
+                    <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
+                        <Link href="#features" className="hover:text-primary transition-colors">Features</Link>
+                        <Link href="#pricing" className="hover:text-primary transition-colors">Pricing</Link>
+                    </div>
 
-                {/* Auth Buttons */}
-                <div className="flex items-center gap-4">
-                    <Link href="/join-waitlist">
-                        <Button className="bg-indigo-700 hover:bg-indigo-600">Get Started</Button>
-                    </Link>
-                </div>
+                    {/* Auth Buttons */}
+                    <div className="flex items-center gap-4">
+                        <Link href="/join-waitlist">
+                            <Button className="bg-indigo-700 hover:bg-indigo-600">Get Started</Button>
+                        </Link>
+                    </div>
+                </SignedOut>
+                <SignedIn>
+                    {/* Desktop Navigation */}
+                    <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
+                        <Link href="/dashboard" className="hover:text-primary transition-colors">Projects</Link>
+                    </div>
+
+                    {/* Auth Buttons */}
+                    <div className="flex items-center gap-4">
+                        <Link href="/join-waitlist">
+                            <Button className="bg-indigo-700 hover:bg-indigo-600">Upgrade</Button>
+                        </Link>
+
+                        <UserButton />
+                    </div>
+
+                </SignedIn>
             </div>
         </nav>
     );
