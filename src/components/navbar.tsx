@@ -26,7 +26,7 @@ export function Navbar() {
 
                     {/* Auth Buttons */}
                     <div className="flex items-center gap-4">
-                        <Link href="/join-waitlist">
+                        <Link href="/dashboard">
                             <Button className="bg-indigo-700 hover:bg-indigo-600">Get Started</Button>
                         </Link>
                     </div>
@@ -39,7 +39,7 @@ export function Navbar() {
 
                     {/* Auth Buttons */}
                     <div className="flex items-center gap-4">
-                        <Link href="/join-waitlist">
+                        <Link href="/upgrade">
                             <Button className="bg-indigo-700 hover:bg-indigo-600">Upgrade</Button>
                         </Link>
 

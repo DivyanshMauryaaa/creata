@@ -1,16 +1,17 @@
+import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-import { AlignCenter, Check, Folder, PlusIcon, Sparkles, Video, X } from "lucide-react";
+import { AlignCenter, Check, Folder, FolderTree, PlusIcon, Sparkles, Video, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="p-6 flex flex-col w-[60%] mx-auto justify-center font-roboto-slab">
+    <div className="p-6 flex flex-col w-[70%] mx-auto justify-center font-roboto-slab">
       <div className="py-48 text-center">
         <span className="px-3 py-2 rounded-full bg-indigo-700 text-white">CREATA AI</span>
-        <p className="text-5xl mt-5">Edit with AI <span className="text-indigo-700">In minutes</span> without losing the Taste.</p>
-        <p className="text-2xl text-muted-foreground">Get content ideas, scripts, and edits—so you can build your 'premium' brand</p>
+        <p className="text-5xl mt-5 font-semibold">4 hours for editing that video? <span className="text-indigo-700">Creata does that in Minutes</span></p>
+        <p className="text-2xl text-muted-foreground">Get content ideas, scripts, and edits—make your brand 'premium'.</p>
         <Link href="/dashboard">
           <Button size={'lg'} className="mt-5 cursor-pointer bg-indigo-700 hover:bg-indigo-600 flex gap-2 mx-auto"><PlusIcon /> New Project</Button>
         </Link>
@@ -23,18 +24,25 @@ export default function Home() {
       <div className="flex mt-5 gap-4">
         <Card className="px-6 flex flex-col gap-1 w-1/3">
           <Sparkles size={32} className="fill-current text-indigo-700" />
-          <CardTitle className="text-3xl">Get Better Ideas</CardTitle>
+          <CardTitle className="text-3xl">Stuck at Ideas? no more</CardTitle>
           <CardDescription>Get automatic ideas for videos for your brand according to your preferences & what your audience wants.</CardDescription>
         </Card>
         <Card className="px-6 flex flex-col gap-1 w-1/3">
           <AlignCenter size={32} className="fill-current text-indigo-700" />
-          <CardTitle className="text-3xl">Generate Instant scripts</CardTitle>
+          <CardTitle className="text-3xl">Make your videos shine!</CardTitle>
           <CardDescription>Generate better, instant & unique scripts for your content.</CardDescription>
         </Card>
         <Card className="px-6 flex flex-col gap-1 w-1/3">
           <Folder size={32} className="fill-current text-indigo-700" />
-          <CardTitle className="text-3xl">Organize without efforts</CardTitle>
-          <CardDescription>Organize your content related work without any extra overload.</CardDescription>
+          <CardTitle className="text-3xl">Organizing takes time...But no more</CardTitle>
+          <CardDescription>One-click Organize your content related work & videos into folders without any extra effort.</CardDescription>
+        </Card>
+      </div>
+      <div className="flex mt-2 gap-4">
+        <Card className="px-6 flex flex-col gap-1 w-1/3">
+          <Folder size={32} className="fill-current text-indigo-700" />
+          <CardTitle className="text-3xl">Making Assets don't waste your time anymore</CardTitle>
+          <CardDescription>Generate AI Assets & use them in your edits without manually changing tabs & downloading assets.</CardDescription>
         </Card>
       </div>
       <br />
@@ -107,11 +115,73 @@ export default function Home() {
         </div>
       </div>
 
+      <div className="py-12">
+        <h2 className="text-6xl font-bold text-center mb-12">Why Creata is #1 Choice for Creators</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Before Card */}
+          <Card className="p-8 border-red-100 bg-red-50/30 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-red-400/30"></div>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 rounded-full bg-red-100 text-red-600">
+                <X size={24} />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-700">The Struggle</h3>
+            </div>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3 text-muted-foreground">
+                <X className="mt-1 shrink-0 text-red-400" size={18} />
+                <span>Editing takes longer than filming</span>
+              </li>
+              <li className="flex items-start gap-3 text-muted-foreground">
+                <X className="mt-1 shrink-0 text-red-400" size={18} />
+                <span>Inconsistent branding & style</span>
+              </li>
+              <li className="flex items-start gap-3 text-muted-foreground">
+                <X className="mt-1 shrink-0 text-red-400" size={18} />
+                <span>Burnout from daily grind</span>
+              </li>
+              <li className="flex items-start gap-3 text-muted-foreground">
+                <X className="mt-1 shrink-0 text-red-400" size={18} />
+                <span>Guessing what will go viral</span>
+              </li>
+            </ul>
+          </Card>
+
+          {/* After Card */}
+          <Card className="p-8 border-indigo-100 bg-indigo-50/40 relative overflow-hidden shadow-xl ring-1 ring-indigo-700/10">
+            <div className="absolute top-0 left-0 w-full h-1 bg-indigo-600"></div>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 rounded-full bg-indigo-100 text-indigo-600">
+                <Sparkles size={24} />
+              </div>
+              <h3 className="text-2xl font-bold text-indigo-950">Creator Freedom</h3>
+            </div>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3 text-gray-700 font-medium">
+                <Check className="mt-1 shrink-0 text-indigo-600" size={18} />
+                <span>Edit & export in minutes</span>
+              </li>
+              <li className="flex items-start gap-3 text-gray-700 font-medium">
+                <Check className="mt-1 shrink-0 text-indigo-600" size={18} />
+                <span>Professional, consistent brand kit</span>
+              </li>
+              <li className="flex items-start gap-3 text-gray-700 font-medium">
+                <Check className="mt-1 shrink-0 text-indigo-600" size={18} />
+                <span>Automated scheduling & posting</span>
+              </li>
+              <li className="flex items-start gap-3 text-gray-700 font-medium">
+                <Check className="mt-1 shrink-0 text-indigo-600" size={18} />
+                <span>AI-driven trend analysis</span>
+              </li>
+            </ul>
+          </Card>
+        </div>
+      </div>
+
       <div className="py-24">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold tracking-tight mb-4">Simple, Transparent Pricing</h2>
           <p className="text-xl text-muted-foreground">Choose the perfect plan for your content creation journey.</p>
-          <p className="text-lg text-muted-foreground">1 credit = 30 seconds of video export</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -128,7 +198,7 @@ export default function Home() {
                 <span className="text-muted-foreground">/month</span>
               </div>
               <Button className="w-full bg-indigo-700 hover:bg-indigo-600">Get it Free</Button>
-            </div>            
+            </div>
             <p className="text-xl px-6">Monthly Included</p>
 
             <div className="px-6 pb-6 pt-2 flex-1">
@@ -204,6 +274,7 @@ export default function Home() {
       <br />
 
       <p className="text-[300px] font-bold font-instrument-serif">CREATA</p>
+      <Footer />
     </div>
   );
 }
