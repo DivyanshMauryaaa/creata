@@ -20,9 +20,17 @@ import { ProjectAsset, ProjectTrack, ProjectClip } from "@/types/editor"
 import { Player, PlayerRef } from '@remotion/player'
 import { MainComposition } from '@/remotion/MainComposition'
 import { getProjectAssets, deleteAsset } from "@/services/assets"
+import {
+    getProjectTracksWithClips,
+    createTrack as createTrackInDB,
+    upsertClip,
+    updateClip as updateClipInDB,
+    deleteClip as deleteClipInDB
+} from "@/services/editor"
 import { AssetUploader } from "@/components/assets/asset-uploader"
 import { AssetList } from "@/components/assets/asset-list"
 import { Timeline } from "@/components/editor/timeline"
+import { TransformOverlay } from "@/components/editor/transform-overlay"
 
 const ProjectPage = () => {
     const params = useParams()
@@ -42,7 +50,7 @@ const ProjectPage = () => {
     const [assets, setAssets] = useState<ProjectAsset[]>([])
     const [tracks, setTracks] = useState<ProjectTrack[]>([])
 
-    
+
 
     // UI State
     const [currentTime, setCurrentTime] = useState(0)
@@ -50,19 +58,47 @@ const ProjectPage = () => {
     const [selectedClip, setSelectedClip] = useState<string | null>(null)
     const [zoomLevel, setZoomLevel] = useState(1)
 
+    const playerContainerRef = useRef<HTMLDivElement>(null)
+
+    // Find the currently selected clip object
+    const selectedClipObject = useMemo(() => {
+        if (!selectedClip) return null;
+        for (const track of tracks) {
+            const clip = track.clips?.find(c => c.id === selectedClip);
+            if (clip) return clip;
+        }
+        return null;
+    }, [selectedClip, tracks])
+
     const [uploading, setUploading] = useState(false)
 
-    // Fetch assets effect - must be before any conditional returns
+    // Fetch data effect
     useEffect(() => {
         if (projectId) {
-            fetchAssets();
+            fetchData();
         }
     }, [projectId])
 
-    const fetchAssets = async () => {
+    const fetchData = async () => {
         if (!projectId) return;
-        const projectAssets = await getProjectAssets(projectId);
+        setLoading(true);
+        const [projectAssets, projectTracks] = await Promise.all([
+            getProjectAssets(projectId),
+            getProjectTracksWithClips(projectId)
+        ]);
+
+        // Join assets with clips
+        const tracksWithAssets = projectTracks.map(track => ({
+            ...track,
+            clips: track.clips?.map(clip => ({
+                ...clip,
+                asset: projectAssets.find(a => a.id === clip.asset_id)
+            }))
+        }));
+
         setAssets(projectAssets);
+        setTracks(tracksWithAssets);
+        setLoading(false);
     }
 
     // Calculate dynamic duration based on clips
@@ -103,7 +139,7 @@ const ProjectPage = () => {
     });
 
     // Logic to add asset to timeline at specific position
-    const handleDropAsset = (asset: ProjectAsset, trackId: string, startTime: number) => {
+    const handleDropAsset = async (asset: ProjectAsset, trackId: string, startTime: number) => {
         const newClip: ProjectClip = {
             id: uuidv4(),
             track_id: trackId,
@@ -112,11 +148,16 @@ const ProjectPage = () => {
             start_time: startTime,
             duration: asset.duration || 5,
             offset: 0,
-            properties: {},
+            properties: {
+                transform: { x: 0, y: 0, scale: 100, rotation: 0 },
+                opacity: 1,
+                volume: 1
+            },
             created_at: new Date().toISOString(),
             asset: asset
         }
 
+        // Optimistic update
         setTracks(prevTracks => {
             return prevTracks.map(track => {
                 if (track.id === trackId) {
@@ -128,10 +169,14 @@ const ProjectPage = () => {
                 return track
             })
         })
+
+        // Persist
+        const { asset: _, ...clipToPersist } = newClip;
+        await upsertClip(clipToPersist as ProjectClip);
     }
 
     // Add a new track
-    const handleAddTrack = () => {
+    const handleAddTrack = async () => {
         const newTrack: ProjectTrack = {
             id: uuidv4(),
             project_id: projectId,
@@ -143,7 +188,71 @@ const ProjectPage = () => {
             created_at: new Date().toISOString(),
             clips: []
         }
+
+        // Optimistic update
         setTracks(prev => [...prev, newTrack])
+
+        // Persist
+        await createTrackInDB(newTrack);
+    }
+
+    // Handle clip updates (drag, resize)
+    const handleUpdateClip = async (clipId: string, updates: Partial<ProjectClip>) => {
+        setTracks(prevTracks => {
+            return prevTracks.map(track => ({
+                ...track,
+                clips: track.clips?.map(clip =>
+                    clip.id === clipId ? { ...clip, ...updates } : clip
+                )
+            }))
+        })
+
+        // Persist update
+        const { asset: _, ...cleanUpdates } = updates;
+        await updateClipInDB(clipId, cleanUpdates);
+    }
+
+    // Handle moving clip to different track
+    const handleMoveClipToTrack = async (clipId: string, targetTrackId: string, newStartTime: number) => {
+        setTracks(prevTracks => {
+            let clipToMove: ProjectClip | null = null
+
+            // Find and remove clip from current track
+            const tracksWithoutClip = prevTracks.map(track => ({
+                ...track,
+                clips: track.clips?.filter(clip => {
+                    if (clip.id === clipId) {
+                        clipToMove = clip
+                        return false
+                    }
+                    return true
+                })
+            }))
+
+            if (!clipToMove) return prevTracks
+
+            // Add clip to target track with new start time and track ID
+            const updatedTracks = tracksWithoutClip.map(track => {
+                if (track.id === targetTrackId) {
+                    const updatedClip = { ...clipToMove!, start_time: newStartTime, track_id: targetTrackId }
+                    return {
+                        ...track,
+                        clips: [...(track.clips || []), updatedClip]
+                    }
+                }
+                return track
+            })
+
+            return updatedTracks
+        })
+
+        // Persist move
+        await updateClipInDB(clipId, { track_id: targetTrackId, start_time: newStartTime });
+    }
+
+    // Handle clip selection
+    const handleSelectClip = (clipId: string) => {
+        setSelectedClip(clipId)
     }
 
     // Handle drag start for assets
@@ -196,25 +305,36 @@ const ProjectPage = () => {
             </div>
             {/* Middle: Player & Timeline */}
             <div className="w-[60%] h-[93vh] flex flex-col">
-                {/* Upper: Player */}
-                <div className="flex-1 p-8 flex items-center justify-center bg-gray-50 border-b border-gray-200">
-                    <div className="relative shadow-lg rounded-lg overflow-hidden border border-gray-200 bg-black w-[80%] aspect-video">
-                        <Player
-                            component={MainComposition}
-                            inputProps={{ tracks }}
-                            durationInFrames={totalDurationInFrames}
-                            fps={FPS}
-                            compositionWidth={1920}
-                            compositionHeight={1080}
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                            }}
-                            controls
-                        />
+                {/* Preview Area */}
+                <div className="flex-1 flex items-center justify-center p-8 bg-gray-100 relative">
+                    <div
+                        ref={playerContainerRef}
+                        className="relative shadow-lg rounded-lg overflow-hidden border border-gray-200 bg-black w-[80%] aspect-video"
+                    >
+                        {isMounted && (
+                            <>
+                                <Player
+                                    component={MainComposition}
+                                    inputProps={{ tracks }}
+                                    durationInFrames={totalDurationInFrames}
+                                    fps={FPS}
+                                    compositionWidth={1920}
+                                    compositionHeight={1080}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                    }}
+                                    controls
+                                />
+                                <TransformOverlay
+                                    selectedClip={selectedClipObject}
+                                    onUpdate={(updates) => handleUpdateClip(selectedClip!, updates)}
+                                    containerRef={playerContainerRef}
+                                />
+                            </>
+                        )}
                     </div>
                 </div>
-
                 {/* Lower: Timeline */}
                 <div className="h-[40%] bg-white border-t border-gray-200">
                     <Timeline
@@ -223,6 +343,10 @@ const ProjectPage = () => {
                         setCurrentTime={setCurrentTime}
                         onDropAsset={handleDropAsset}
                         onAddTrack={handleAddTrack}
+                        selectedClipId={selectedClip}
+                        onSelectClip={handleSelectClip}
+                        onUpdateClip={handleUpdateClip}
+                        onMoveClipToTrack={handleMoveClipToTrack}
                     />
                 </div>
             </div>

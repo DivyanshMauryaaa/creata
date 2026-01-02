@@ -11,9 +11,26 @@ interface TimelineTrackProps {
     clips: ProjectClip[]
     pixelsPerSecond: number
     onDropAsset: (asset: ProjectAsset, trackId: string, startTime: number) => void
+    selectedClipId?: string | null
+    onSelectClip?: (clipId: string) => void
+    onUpdateClip?: (clipId: string, updates: Partial<ProjectClip>) => void
+    onMoveClipToTrack?: (clipId: string, targetTrackId: string, newStartTime: number) => void
+    trackIndex: number
+    allTracks: ProjectTrack[]
 }
 
-export const TimelineTrack = ({ track, clips, pixelsPerSecond, onDropAsset }: TimelineTrackProps) => {
+export const TimelineTrack = ({
+    track,
+    clips,
+    pixelsPerSecond,
+    onDropAsset,
+    selectedClipId,
+    onSelectClip,
+    onUpdateClip,
+    onMoveClipToTrack,
+    trackIndex,
+    allTracks
+}: TimelineTrackProps) => {
     const [isDragOver, setIsDragOver] = useState(false)
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -71,6 +88,14 @@ export const TimelineTrack = ({ track, clips, pixelsPerSecond, onDropAsset }: Ti
                         key={clip.id}
                         clip={clip}
                         pixelsPerSecond={pixelsPerSecond}
+                        isSelected={selectedClipId === clip.id}
+                        onSelect={onSelectClip}
+                        onUpdate={onUpdateClip}
+                        onMoveToTrack={onMoveClipToTrack}
+                        allClipsInTrack={clips}
+                        trackId={track.id}
+                        trackIndex={trackIndex}
+                        allTracks={allTracks}
                     />
                 ))}
             </div>
